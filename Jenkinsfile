@@ -1,28 +1,26 @@
 pipeline {
-    agent {
-        node {
-        label 'maven'
-        }
+    agent any
+
+    environment {
+        JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64" // Update this path based on your installation
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
-environment {
-    PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
-}
 
     stages {
-        stage('build') {
+        stage('Verify Java Version') {
             steps {
-                sh 'mvn clean deploy' 
+                sh 'java -version'
             }
-          }
-    stage('SonarQube analysis') {
-    environment {   
-        scannerHome = tool 'vproapp-sonar-scanner';
+        }
+        stage('SonarQube analysis') {
+            tools {
+                sonar 'vproapp-sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube-server') {
+                    sh "${tool 'vproapp-sonar-scanner'}/bin/sonar-scanner"
+                }
+            }
+        }
     }
-    steps{
-    withSonarQubeEnv('sonarqube-server') { // ##If you have configured more than one global server connection, you can specify its name
-      sh "${scannerHome}/bin/sonar-scanner"
-    }
-    }
-  }       
-}
 }
