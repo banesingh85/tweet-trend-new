@@ -23,7 +23,9 @@ pipeline {
                         ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.organization=vproapp01 \
                         -Dsonar.projectKey=vproapp01-key_ttrend-vpro \
-                        -Dsonar.host.url=https://sonarcloud.io
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=${SONAR_TOKEN} \
+                        -X
                     '''
                 }
             }
