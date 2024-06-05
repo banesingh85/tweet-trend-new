@@ -1,28 +1,32 @@
 pipeline {
     agent {
         node {
-        label 'maven'
+            label 'maven'
         }
     }
-environment {
-    PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
-}
-
+    environment {
+        PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+    }
     stages {
         stage('build') {
             steps {
-                sh 'mvn clean deploy' 
+                sh 'mvn clean deploy'
             }
-          }
-    stage('SonarQube analysis') {
-    environment {   
-        scannerHome = tool 'vproapp-sonar-scanner';
+        }
+        stage('SonarQube analysis') {
+            environment {
+                scannerHome = tool 'vproapp-sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube-server') {
+                    sh '''
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.organization=vproapp01 \
+                        -Dsonar.projectKey=vproapp01-key_ttrend-vpro \
+                        -Dsonar.host.url=https://sonarcloud.io
+                    '''
+                }
+            }
+        }
     }
-    steps{
-    withSonarQubeEnv('sonarqube-server') { //ok banesinghIf you have configured more than one global server connection, you can specify its name
-      sh "${scannerHome}/bin/sonar-scanner"
-    }
-    }
-  }       
-}
 }
