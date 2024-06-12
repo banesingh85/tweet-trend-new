@@ -32,21 +32,27 @@ pipeline {
           }
         }
        }
-       stage('Clean up docker images') {
-        steps {
-            script {
-                try {
-                    sh 'docker image prune -f'
-                } catch (Exception e) {
-                    error "Failed to cleanup old docker images: ${e.message}"
+       stage('Clean Up Old Docker Images') {
+            steps {
+                script {
+                    try {
+                        def images = sh(script: "docker images --format '{{.Repository}}:{{.Tag}} {{.CreatedAt}}' | grep '${DOCKER_IMAGE}' | sort -r | tail -n +${KEEP_LATEST_N + 1}", returnStdout: true).trim()
+                        if (images) {
+                            images.split('\n').each { image ->
+                                def imageId = image.split(' ')[0]
+                                sh "docker rmi ${imageId} || true"
+                            }
+                        }
+                    } catch (Exception e) {
+                        error "Failed to clean up old Docker images: ${e.message}"
+                    }
                 }
             }
-       }
+        }
     }
-}
-post {
-    always {
-        cleanWs()
+    post {
+        always {
+            cleanWs()
+        }
     }
-}
 }
