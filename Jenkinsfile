@@ -22,5 +22,10 @@ pipeline {
                 }
             }
         }
+        stage('push docker image on dockerhub') {
+           steps {
+            script {
+                docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
     }
 }
