@@ -25,10 +25,12 @@ pipeline {
         stage('push docker image on dockerhub') {
            steps {
             script {
+                docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                 docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
                 docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
     }
 }
 }
  }
+}
 }
