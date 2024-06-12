@@ -28,9 +28,25 @@ pipeline {
                 docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                 docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
                 docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
+            }
+          }
+        }
+       }
+       stage('Clean up docker images') {
+        steps {
+            script {
+                try {
+                    sh 'docker image prune -f'
+                } catch (Exception e) {
+                    error "Failed to cleanup old docker images: ${e.message}"
+                }
+            }
+       }
     }
 }
-}
- }
+post {
+    always {
+        cleanWs()
+    }
 }
 }
