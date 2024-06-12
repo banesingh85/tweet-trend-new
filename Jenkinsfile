@@ -29,3 +29,6 @@ pipeline {
                 docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
     }
 }
+}
+ }
+}
