@@ -5,9 +5,9 @@ pipeline {
         }
     }
     environment {
-        PATH = "/usr/bin/git:/opt/apache-maven-3.9.6/bin:$PATH" // Ensure the correct Git binary path
-        DOCKER_CREDENTIALS_ID = 'dockerhub_cred'
-        DOCKER_IMAGE = 'banesingh85/ttrend'
+         PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+         DOCKER_CREDENTIALS_ID = 'dockerhub_cred'
+         DOCKER_IMAGE = 'banesingh85/ttrend'
     }
     stages {
         stage('build') {
