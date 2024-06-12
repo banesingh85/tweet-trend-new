@@ -6,6 +6,8 @@ pipeline {
     }
 environment {
     PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+    DOCKER_CREDENTIALS_ID= 'dockerhub_cred'
+    DOCKER_IMAGE = 'banesingh85/ttrend'
 }
 
     stages {
@@ -13,6 +15,13 @@ environment {
             steps {
                 sh 'mvn clean deploy' 
             }
-          }  
+          }
+
+    stage('build docker image') {
+        steps {
+            scripts {
+                docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
+        }  
 }
 }
+    }
