@@ -7,7 +7,7 @@ pipeline {
     environment {
          PATH = "/opt/apache-maven-3.9.6/bin:$PATH" 
          DOCKER_CREDENTIALS_ID = 'dockerhub_cred'
-         DOCKER_IMAGE = 'banesingh85/ttrend'
+         DOCKER_IMAGE = 'banesingh85/ttrend' //done
     }
     stages {
         stage('build') {
